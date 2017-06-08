@@ -1,0 +1,47 @@
+%% Setup
+clear; clc;
+cur = pwd;
+addpath(genpath(cur));
+export_path = fullfile(cur,'gen\');
+COMPILE = true;
+
+% Add FROST
+FROST_PATH = 'D:\Graduate\robots\SomePackage\frost';
+addpath(FROST_PATH);
+frost_addpath;
+
+% Load model
+
+threelink = ThreeLink('urdf/three_link_walker.urdf');
+threelink.configureDynamics('DelayCoriolisSet',true);
+
+% Define domains
+r_stance = RightStance(threelink);
+% 1step optimization
+r_impact = RightImpact(r_stance,r_stance);
+
+threelink_1step = HybridSystem('threelink_1step');
+threelink_1step = addVertex(rabbit_1step, 'R_Stance', 'Domain', r_stance);
+
+srcs = {'R_Stance'};
+tars = {'R_Stance'};
+
+threelink_1step = adddEdge(threelink_1step,srcs,tars);
+threelink_1step = setEdgeProperties(threelink_1step,srcs,tars,...
+    'Guard',{r_impact});
+
+%% Define User Constraints
+r_stance.UserNlpConstraint = str2func('right_stance_constraints');
+r_impact.UserNlpConstraint = str2func('right_impact_constraints');
+
+%% Define User Costs
+u = r_stance.Inputs.Control.u;
+u2r = tovector(norm(u).^2);
+u2r_fun = SymFunction(['torque_' r_stance.Name], u2r, {u}):
+
+%% Create 
+
+
+
+
+
