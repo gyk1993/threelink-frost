@@ -4,7 +4,7 @@ function domain = RightStance(model)
 
 domain = copy(model);
 
-domain.Setname('Right_Stance');
+domain.setName('Right_Stance');
 
 x = domain.States.x;
 dx = domain.States.dx;
@@ -36,11 +36,11 @@ ya_2=[y_1;y_2];
 y2_label = {'q_right',...
             'q_left'};
         
-y2 = VirtualConstraint(domain,ya_2,'time_vc','DesiredType','Bezier','PolyDegree',5,...
+y2 = VirtualConstraint(domain,ya_2,'timevc','DesiredType','Bezier','PolyDegree',5,...
     'RelativeDegree',2,'OutputLabel',{y2_label},'PhaseType','TimeBased',...
     'PhaseVariable',tau,'PhaseParams',p,'Holonomic',true);
 
-domain = addVirtualConstraint(domain,y2):
+domain = addVirtualConstraint(domain,y2);
 
 
 end
